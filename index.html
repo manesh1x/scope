@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scope Solutions - Strategic IT Staffing</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script type="module">
+    // Global setup
+    window.onload = () => {
+      lucide.createIcons();
+    };
+
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a0a0f;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Base Styles */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0a0a0f;
+      color: white;
+      /* Prevents horizontal scroll caused by negative transform in reveal animation */
+      overflow-x: hidden;
+    }
+
+    /* Section styles adjusted to rely on content and padding, not 100vh min-height */
+    section {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      /* Keep for internal blob elements */
+    }
+
+    /* Animation Classes */
+    .reveal {
+      opacity: 0;
+      /* Slide in from the left */
+      transform: translateX(-30px);
+      transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      /* Slide in from the left */
+      transform: translateX(0);
+    }
+
+    .delay-100 {
+      transition-delay: 0.1s;
+    }
+
+    .delay-200 {
+      transition-delay: 0.2s;
+    }
+
+    .delay-300 {
+      transition-delay: 0.3s;
+    }
+
+    .delay-400 {
+      transition-delay: 0.4s;
+    }
+
+    .delay-500 {
+      transition-delay: 0.5s;
+    }
+
+    .delay-600 {
+      transition-delay: 0.6s;
+    }
+
+    /* Floating Blobs */
+    .blob {
+      position: absolute;
+      filter: blur(80px);
+      z-index: 0;
+      opacity: 0.4;
+      animation: float 10s infinite ease-in-out;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+    }
+
+    /* Background Image Overlay */
+    .bg-overlay {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+      z-index: -1;
+      mix-blend-mode: overlay;
+    }
+
+    /* --- NEW CARD HOVER EFFECT STYLES --- */
+
+    /* Generic Card Style: Applies to all interactive cards (.p-6, .p-8, etc.) */
+    .card-effect {
+      /* Standard transition for scaling and base shadows */
+      transition: all 0.3s ease-in-out;
+      box-shadow: 0 0px 5px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      /* Important for containing the moving line */
+    }
+
+    /* Glow/Border Effect on Hover */
+    .card-effect:hover {
+      /* Adds a subtle external glow effect */
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.4), 0 0 5px rgba(59, 130, 246, 0.2);
+      /* Subtle lift */
+      transform: translateY(-4px);
+    }
+
+    /* Bottom Outline Line (::after pseudo-element) */
+    .card-effect::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: -100%;
+      /* Start off-screen to the left */
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #06b6d4, #3b82f6, transparent);
+      /* Gradient Line */
+      transition: left 0.5s ease-out;
+      /* Smooth movement transition */
+    }
+
+    .card-effect:hover::after {
+      left: 0;
+      /* Move the line fully into view on hover */
+    }
+  </style>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: "#0a0a0f",
+              gray: "#0d1117",
+              cyan: "#06b6d4",
+              blue: "#3b82f6"
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="antialiased">
+
+  <!-- Navigation -->
+  <nav
+    class="fixed top-0 left-0 right-0 z-50 bg-brand-dark/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="#hero" class="flex items-center gap-2 group">
+          <img src="logo.png" alt="Scope Solutions Logo"
+            class="h-24 transition-transform group-hover:scale-[1.02] filter drop-shadow-lg">
+        </a>
+
+        <!-- Desktop Links -->
+        <div class="hidden md:flex items-center gap-8">
+          <a href="#about" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">About</a>
+          <a href="#why" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Why Us</a>
+          <a href="#services" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Services</a>
+          <a href="#contact" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Contact</a>
+        </div>
+
+        <!-- CTA -->
+        <div class="hidden md:block">
+          <a href="#contact"
+            class="inline-flex items-center justify-center h-9 px-6 rounded-full bg-white text-brand-dark hover:bg-gray-200 font-semibold text-sm transition-all shadow-lg hover:shadow-xl">
+            Find Talent
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="bg-brand-dark min-h-screen py-32">
+    <div class="bg-overlay"
+      style="background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'); opacity: 0.15;">
+    </div>
+    <div class="blob bg-blue-600 w-96 h-96 rounded-full top-1/4 left-1/4"></div>
+    <div class="blob bg-purple-600 w-80 h-80 rounded-full bottom-1/4 right-1/4 animation-delay-2000"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      <div
+        class="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8">
+        <i data-lucide="sparkles" class="w-4 h-4 text-cyan-400"></i>
+        <span class="text-sm text-gray-300 font-medium tracking-wide">Next-Gen IT Staffing & Consulting</span>
+      </div>
+
+      <h1 class="reveal delay-100 text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 leading-tight">
+        <span class="text-white">Top Tech</span><br />
+        <span
+          class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Talent</span>,
+        Delivered.
+      </h1>
+
+      <p class="reveal delay-200 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+        We bridge the gap between innovation and execution by connecting world-class enterprises with elite IT
+        professionals.
+      </p>
+
+      <div class="reveal delay-300 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#about"
+          class="inline-flex items-center justify-center gap-2 h-14 px-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-lg shadow-lg shadow-cyan-500/25 transition-all hover:scale-105">
+          Get Started <i data-lucide="arrow-right" class="w-5 h-5"></i>
+        </a>
+        <a href="#services"
+          class="inline-flex items-center justify-center h-14 px-8 rounded-full border border-white/20 hover:bg-white/5 text-white font-medium text-lg transition-all">
+          View Solutions
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="bg-brand-gray py-28">
+    <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div class="reveal">
+          <span class="text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-4 block">Who We Are</span>
+          <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            Your Strategic <span
+              class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Staffing Partner</span>
+          </h2>
+          <p class="text-gray-400 text-lg leading-relaxed mb-6">
+            Scope Solutions is more than just a recruitment agency; we are a specialized IT consultancy. We understand
+            the nuances of the tech stack, ensuring we match you with candidates who don't just fit the job description,
+            but elevate your engineering culture.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 reveal delay-200">
+          <!-- Card 1 (APPLY card-effect) -->
+          <div class="card-effect p-6 rounded-2xl bg-white/5 border border-white/10 relative">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4">
+              <i data-lucide="users" class="w-6 h-6 text-cyan-400"></i>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Talent Network</h3>
+            <p class="text-gray-500 text-sm">Access to 50k+ pre-vetted engineers & architects.</p>
+          </div>
+          <!-- Card 2 (APPLY card-effect) -->
+          <div class="card-effect p-6 rounded-2xl bg-white/5 border border-white/10 relative">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+              <i data-lucide="briefcase" class="w-6 h-6 text-blue-400"></i>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Tech Expertise</h3>
+            <p class="text-gray-500 text-sm">We speak your language: Java, Python, React, Cloud.</p>
+          </div>
+          <!-- Card 3 (APPLY card-effect) -->
+          <div class="card-effect p-6 rounded-2xl bg-white/5 border border-white/10 relative">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+              <i data-lucide="clock" class="w-6 h-6 text-purple-400"></i>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Rapid Speed</h3>
+            <p class="text-gray-500 text-sm">48-hour average turnaround for qualified profiles.</p>
+          </div>
+          <!-- Card 4 (APPLY card-effect) -->
+          <div class="card-effect p-6 rounded-2xl bg-white/5 border border-white/10 relative">
+            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+              <i data-lucide="handshake" class="w-6 h-6 text-green-400"></i>
+            </div>
+            <h3 class="text-white font-semibold text-lg mb-2">Partnership</h3>
+            <p class="text-gray-500 text-sm">We invest in understanding your long-term roadmap.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US (Scope Advantage) -->
+  <section id="why" class="bg-brand-dark py-28">
+    <div
+      class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay">
+    </div>
+    <div
+      class="blob bg-blue-500/10 w-[600px] h-[600px] rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 w-full text-center">
+      <span class="reveal text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-4 block">Why Choose Us</span>
+      <h2 class="reveal delay-100 text-4xl md:text-5xl font-bold text-white mb-6">
+        The Scope <span
+          class="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">Advantage</span>
+      </h2>
+      <p class="reveal delay-200 text-gray-400 text-lg max-w-2xl mx-auto mb-16">
+        We don't just send resumes. We deliver solutions. Our rigorous vetting process ensures you only see the top 1%
+        of IT talent.
+      </p>
+
+      <!-- GRID for 6 Advantages -->
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+        <!-- Item 1 (APPLY card-effect) -->
+        <div
+          class="reveal delay-300 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="zap" class="w-5 h-5 text-cyan-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Agile Delivery</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">We operate at the speed of your sprints. Receive
+                qualified candidates ASAP to keep your roadmap on track.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Item 2 (APPLY card-effect) -->
+        <div
+          class="reveal delay-300 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="shield-check" class="w-5 h-5 text-blue-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Technical Vetting</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Every candidate undergoes rigorous technical assessments
+                and background checks before they reach your inbox.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Item 3 (APPLY card-effect) -->
+        <div
+          class="reveal delay-300 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="trending-up" class="w-5 h-5 text-purple-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Scalable Teams</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">From a single specialized developer to a full scrum team,
+                we scale our services to match your project demands.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4 (APPLY card-effect) -->
+        <div
+          class="reveal delay-400 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="headphones" class="w-5 h-5 text-yellow-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Dedicated Support</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">Your personal account manager ensures seamless
+                communication and support throughout the entire placement lifecycle.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Item 5 (APPLY card-effect) -->
+        <div
+          class="reveal delay-500 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="award" class="w-5 h-5 text-green-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Quality Guarantee</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">We offer a guarantee on all permanent
+                placements, ensuring your peace of mind.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Item 6 (APPLY card-effect) -->
+        <div
+          class="reveal delay-600 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left backdrop-blur-md relative">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+              <i data-lucide="aperture" class="w-5 h-5 text-red-400"></i>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-2">Cultural Fit Focus</h3>
+              <p class="text-gray-500 text-sm leading-relaxed">We match candidates not just on skills, but on company
+                values, team chemistry, and work style.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section id="services" class="bg-brand-gray py-28">
+    <div class="blob bg-purple-500/10 w-96 h-96 rounded-full top-0 left-0"></div>
+    <div class="blob bg-blue-500/10 w-80 h-80 rounded-full bottom-0 right-0 animation-delay-3000"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 w-full text-center">
+      <span class="reveal text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-4 block">Our Solutions</span>
+      <h2 class="reveal delay-100 text-4xl md:text-5xl font-bold text-white mb-6">
+        Flexible <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">IT
+          Staffing</span> Models
+      </h2>
+      <p class="reveal delay-200 text-gray-400 text-lg max-w-2xl mx-auto mb-16">
+        We offer flexible engagement models tailored to your specific project needs and business timelines.
+      </p>
+
+      <!-- Services Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <!-- Service Card 1: Contract Staffing & Staff Augmentation (APPLY card-effect) -->
+        <div class="reveal delay-300 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left relative">
+          <div class="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center mb-4">
+            <i data-lucide="component" class="w-6 h-6 text-blue-400"></i>
+          </div>
+          <h3 class="text-white font-semibold text-xl mb-3">Contract Staffing / Augmentation</h3>
+          <p class="text-gray-500 text-base leading-relaxed">
+            Quickly scale your internal teams with highly specialized, contract IT professionals for short or long-term
+            projects.
+          </p>
+        </div>
+
+        <!-- Service Card 2: Direct Hire Placement (APPLY card-effect) -->
+        <div class="reveal delay-400 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left relative">
+          <div class="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center mb-4">
+            <i data-lucide="briefcase" class="w-6 h-6 text-cyan-400"></i>
+          </div>
+          <h3 class="text-white font-semibold text-xl mb-3">Direct Hire Placement</h3>
+          <p class="text-gray-500 text-base leading-relaxed">
+            Find permanent, full-time employees—from senior developers to executive leaders—vetted for skill and
+            cultural fit.
+          </p>
+        </div>
+
+        <!-- Service Card 3: Managed Services (APPLY card-effect) -->
+        <div class="reveal delay-500 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left relative">
+          <div class="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center mb-4">
+            <i data-lucide="wrench" class="w-6 h-6 text-purple-400"></i>
+          </div>
+          <h3 class="text-white font-semibold text-xl mb-3">Managed Projects</h3>
+          <p class="text-gray-500 text-base leading-relaxed">
+            Outsource entire projects or technology departments to our expert teams for guaranteed delivery and quality.
+          </p>
+        </div>
+
+        <!-- Service Card 4: Executive Search (APPLY card-effect) -->
+        <div class="reveal delay-600 card-effect p-8 rounded-2xl bg-white/5 border border-white/10 text-left relative">
+          <div class="w-12 h-12 rounded-lg bg-yellow-500/20 flex items-center justify-center mb-4">
+            <i data-lucide="crown" class="w-6 h-6 text-yellow-400"></i>
+          </div>
+          <h3 class="text-white font-semibold text-xl mb-3">Executive Search</h3>
+          <p class="text-gray-500 text-base leading-relaxed">
+            Confidential recruitment of C-level executives, VPs, and specialized technical directors for long-term
+            growth.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION (UPDATED TO DISPLAY INFO ONLY) -->
+  <section id="contact" class="bg-brand-dark relative flex flex-col justify-center py-28">
+    <div class="blob bg-cyan-500/10 w-96 h-96 rounded-full bottom-0 right-0"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6 w-full py-20 text-center">
+      <div class="reveal">
+        <span class="text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-4 block">Get In Touch</span>
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+          Direct <span class="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Contact</span>
+        </h2>
+        <p class="text-gray-400 text-lg leading-relaxed mb-12 max-w-2xl mx-auto">
+          Reach out directly to start a conversation about your talent needs or career aspirations. We look forward to
+          connecting.
+        </p>
+      </div>
+
+      <div
+        class="reveal delay-100 flex flex-col sm:flex-row justify-center gap-8 md:gap-16 items-center bg-white/5 border border-white/10 p-8 rounded-3xl backdrop-blur-md">
+
+        <!-- Email -->
+        <div class="flex flex-col items-center gap-2">
+          <a href="mailto:hr@scopesllc.com"
+            class="w-16 h-16 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 transition-colors flex items-center justify-center shrink-0">
+            <i data-lucide="mail" class="w-8 h-8 text-cyan-400"></i>
+          </a>
+          <p class="text-gray-500 text-sm mt-2">Email Us</p>
+          <a href="mailto:hr@scopesllc.com"
+            class="text-white font-medium hover:text-cyan-400 transition-colors">hr@scopesllc.com</a>
+        </div>
+
+        <!-- Phone -->
+        <div class="flex flex-col items-center gap-2">
+          <a href="tel:+14256288330"
+            class="w-16 h-16 rounded-full bg-blue-500/20 hover:bg-blue-500/30 transition-colors flex items-center justify-center shrink-0">
+            <i data-lucide="phone" class="w-8 h-8 text-blue-400"></i>
+          </a>
+          <p class="text-gray-500 text-sm mt-2">Call Us</p>
+          <a href="tel:+14256288330" class="text-white font-medium hover:text-blue-400 transition-colors">+1 (425)
+            628-8330</a>
+        </div>
+
+        <!-- Location -->
+        <div class="flex flex-col items-center gap-2">
+          <div class="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0">
+            <i data-lucide="map-pin" class="w-8 h-8 text-purple-400"></i>
+          </div>
+          <p class="text-gray-500 text-sm mt-2">Location</p>
+          <span class="text-white font-medium">Frisco, TX</span>
+        </div>
+      </div>
+
+      <!-- Socials -->
+      <div class="reveal delay-200 mt-16">
+        <h3 class="text-xl font-semibold text-white mb-6">Connect on Social</h3>
+        <div class="flex justify-center gap-6">
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center text-gray-400 hover:text-white"
+            aria-label="LinkedIn">
+            <i data-lucide="linkedin" class="w-6 h-6"></i>
+          </a>
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center text-gray-400 hover:text-white"
+            aria-label="Twitter">
+            <i data-lucide="twitter" class="w-6 h-6"></i>
+          </a>
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors flex items-center justify-center text-gray-400 hover:text-white"
+            aria-label="Instagram">
+            <i data-lucide="instagram" class="w-6 h-6"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="min-h-[auto] !h-auto py-12 bg-brand-dark border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-6 w-full">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2">
+          <a href="#hero" class="flex items-center gap-2 group">
+            <img 
+              src="logo.png" 
+              alt="Scope Solutions Logo"
+              class="h-20 transition-transform group-hover:scale-[1.02] filter drop-shadow-lg">
+          </a>
+        </div>
+        <div class="text-gray-500 text-sm">
+          © 2025 Scope Solutions Inc. All rights reserved.
+        </div>
+        <div class="flex gap-4">
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="text-gray-500 hover:text-white transition-colors" aria-label="LinkedIn"><i data-lucide="linkedin"
+              class="w-5 h-5"></i></a>
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="text-gray-500 hover:text-white transition-colors" aria-label="Twitter"><i data-lucide="twitter"
+              class="w-5 h-5"></i></a>
+          <a href="https://www.linkedin.com/company/scopesolutionsllc/about"
+            class="text-gray-500 hover:text-white transition-colors" aria-label="Instagram"><i data-lucide="instagram"
+              class="w-5 h-5"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for Scroll Animations
+    const observerOptions = {
+      // Set root to null (viewport) for standard scrolling
+      root: null,
+      // Tweak threshold for better mobile visibility
+      threshold: 0.2
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add 'active' class to start the animation
+          entry.target.classList.add('active');
+          // Optionally unobserve if you only want the animation once
+          // observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Apply observer to all elements with the 'reveal' class
+    document.querySelectorAll('.reveal').forEach((el) => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+
+</html>
